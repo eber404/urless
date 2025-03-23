@@ -1,5 +1,5 @@
 import React from 'react'
-import { twMerge } from 'tailwind-merge'
+import { tv } from 'tailwind-variants'
 
 type Props = {
   isValid?: boolean
@@ -7,24 +7,24 @@ type Props = {
 } & React.TextareaHTMLAttributes<HTMLTextAreaElement>
 
 export function TextArea({ isTouched, isValid, ...props }: Props) {
-  const borderBase = 'border-1 border-zinc-500'
-  const borderError = 'border-red-800'
-  const borderSuccess = 'border-green-800'
-  const borderStyle = twMerge(
-    borderBase,
-    isTouched && (isValid ? borderSuccess : borderError)
-  )
-
-  console.log({ borderStyle, isTouched, isValid })
+  const textArea = tv({
+    base: 'border-1 border-zinc-500 dark:bg-zinc-800 rounded-md p-4',
+    variants: {
+      border: {
+        success: 'border-green-800',
+        error: 'border-red-800',
+        untouched: '',
+      },
+    },
+    defaultVariants: { border: 'untouched' },
+  })
 
   return (
     <textarea
       {...props}
-      className={twMerge(
-        'dark:bg-zinc-800 rounded-md p-4',
-        props.className,
-        borderStyle
-      )}
+      className={textArea({
+        border: isTouched ? (isValid ? 'success' : 'error') : 'untouched',
+      })}
       rows={6}
     ></textarea>
   )
